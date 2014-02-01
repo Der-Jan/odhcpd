@@ -147,7 +147,7 @@ static void clean_interface(struct interface *iface)
 	free(iface->upstream);
 	free(iface->static_ndp);
 	free(iface->dhcpv4_dns);
-	free(iface->routerv4)
+	free(iface->routerv4);
 	memset(&iface->ra, 0, sizeof(*iface) - offsetof(struct interface, ra));
 }
 
