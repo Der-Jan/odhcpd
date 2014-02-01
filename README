@@ -88,6 +88,7 @@ dynamicdhcp	bool	1			dynamically create leases
 dns		list	<local address>		DNS servers to announce
 						accepts IPv4 and IPv6
 domain		list	<local search domain>	Search domains to announce
+routerv4    string              IPv4 gateway, when it is not this machine
 
 leasetime	string	12h			DHCPv4 address leasetime
 start		integer	100			DHCPv4 pool start
