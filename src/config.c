@@ -39,6 +39,7 @@ enum {
 	IFACE_ATTR_NDPROXY_ROUTING,
 	IFACE_ATTR_NDPROXY_SLAVE,
 	IFACE_ATTR_NDPROXY_STATIC,
+	IFACE_ATTR_ROUTERV4,
 	IFACE_ATTR_MAX
 };
 
@@ -66,6 +67,7 @@ static const struct blobmsg_policy iface_attrs[IFACE_ATTR_MAX] = {
 	[IFACE_ATTR_NDPROXY_ROUTING] = { .name = "ndproxy_routing", .type = BLOBMSG_TYPE_BOOL },
 	[IFACE_ATTR_NDPROXY_SLAVE] = { .name = "ndproxy_slave", .type = BLOBMSG_TYPE_BOOL },
 	[IFACE_ATTR_NDPROXY_STATIC] = { .name = "ndproxy_static", .type = BLOBMSG_TYPE_ARRAY },
+	[IFACE_ATTR_ROUTERV4] = { .name = "routerv4", .type = BLOBMSG_TYPE_STRING },
 };
 
 static const struct uci_blob_param_info iface_attr_info[IFACE_ATTR_MAX] = {
@@ -145,6 +147,7 @@ static void clean_interface(struct interface *iface)
 	free(iface->upstream);
 	free(iface->static_ndp);
 	free(iface->dhcpv4_dns);
+	free(iface->routerv4);
 	memset(&iface->ra, 0, sizeof(*iface) - offsetof(struct interface, ra));
 }
 
@@ -497,6 +500,17 @@ int config_parse_interface(void *data, size_t len, const char *name, bool overwr
 			memcpy(&iface->static_ndp[iface->static_ndp_len], blobmsg_get_string(cur), len);
 			iface->static_ndp_len += len;
 		}
+	}
+	
+	if ((c = tb[IFACE_ATTR_ROUTERV4])) {
+		struct in_addr addr4;
+		if (inet_pton(AF_INET, blobmsg_get_string(c), &addr4) == 1) {		
+			iface->routerv4 = malloc(sizeof(*iface->routerv4));
+			if (!iface->routerv4)
+				goto err;
+			*iface->routerv4 = addr4;
+		} else
+			goto err;
 	}
 
 	return 0;

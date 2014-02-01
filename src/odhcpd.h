@@ -157,6 +157,9 @@ struct interface {
 
 	char *upstream;
 	size_t upstream_len;
+	
+	// ROUTERV4
+	struct in_addr *routerv4;
 };
 
 extern struct list_head interfaces;
