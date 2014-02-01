@@ -366,7 +366,10 @@ static void handle_dhcpv4(void *addr, void *data, size_t len,
 				strlen(_res.dnsrch[0]), _res.dnsrch[0]);
 	}
 
-	dhcpv4_put(&reply, &cookie, DHCPV4_OPT_ROUTER, 4, &ifaddr.sin_addr);
+	if (iface->routerv4) 
+		dhcpv4_put(&reply, &cookie, DHCPV4_OPT_ROUTER, 4, iface->routerv4);
+	else
+		dhcpv4_put(&reply, &cookie, DHCPV4_OPT_ROUTER, 4, &ifaddr.sin_addr);
 
 
 
